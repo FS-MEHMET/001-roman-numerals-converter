@@ -1,62 +1,49 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: |
-  flask uygulaması ile cloudformationdan instance ayaga kaldırmak.  
+  flask uygulaması ile cloudformationdan instance ayaga kaldırmak.
 Resources:
-  MyEc2:
+  MySecGrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH and HTTP # Required
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  WebServerHost:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-04cb4ca688797756f
       InstanceType: t2.micro
       KeyName: firstkey
-      SecurityGroupIds: 
-        !Ref MySecGrp
-      Tags: 
+      SecurityGroupIds:
+        - !Ref MySecGrp
+      Tags:
         - Key: Name
           Value: !Sub Web Server of ${AWS::StackName}
 
       UserData: !Base64 |
-         #! /bin/bash
-          yum update -y
-          yum install python3
-          pip3 install flask
-          cd /home/ec2-user
-          FOLDER="https://raw.githubusercontent.com/FS-MEHMET/001-roman-numerals-converter/main/roman-numerals-converter/"
-          wget ${FOLDER}/app.py
-          mkdir templates && cd templates
-          wget ${FOLDER}/templates/index.html
-          wget ${FOLDER}/templates/result.html
-          cd ..
-          python3 app.py
-  
-
-
-  MySecGrp:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Enable SSH and HTTP # Required
-        - IpProtocol: tcp
-          FromPort: 
-          ToPort: 
-          CidrIp: 
-
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-      Tags: 
-        Tags
-      VpcId: "String"
-
-
-
-
-      
-
-
-
+        #! /bin/bash
+         yum update -y
+         yum install python3
+         pip3 install flask
+         cd /home/ec2-user
+         FOLDER="https://raw.githubusercontent.com/FS-MEHMET/001-roman-numerals-converter/main/roman-numerals-converter/"
+         wget ${FOLDER}/app.py
+         mkdir templates && cd templates
+         wget ${FOLDER}/templates/index.html
+         wget ${FOLDER}/templates/result.html
+         cd ..
+         python3 app.py
 
 Outputs:
   DnsName:
-    Value:!Sub 
+    Value: !Sub
       - http://${PublicAddress}
-      - PublicAddress: !GetAtt MyEc2.PublicDnsName
+      - PublicAddress: !GetAtt WebServerHost.PublicDnsName
