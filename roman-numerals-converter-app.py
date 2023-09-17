@@ -7,7 +7,7 @@ def convert(decimal_num):
     num_to_roman = ''
 
     for i in roman.keys():
-        num_to_roman += roman[i]*(decimal_num//i) 
+        num_to_roman += roman[i]*(decimal_num//i)
         decimal_num %= i
     return num_to_roman
 
@@ -21,7 +21,7 @@ def main_post():
         number = int(alpha)
         if not 0 < number < 4000:
             return render_template('index.html', developer_name='Fs_Mehmet', not_valid=True)
-        return render_template('result.html', number_decimal = number , number_roman= convert(number), developer_name='Sheldon')
+        return render_template('result.html', number_decimal = number , number_roman= convert(number), developer_name='Fs_Mehmet')
     else:
         return render_template('index.html', developer_name='Fs_Mehmet', not_valid=False)
 
