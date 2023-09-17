@@ -31,16 +31,17 @@ Resources:
       UserData: !Base64 |
         #!/bin/bash
          yum update -y
-         yum install python3
-         yum install python3-pip
-         pip3 install flask
-         cd /home/ec2-user
+         yum install python3 -y
          FOLDER="https://raw.githubusercontent.com/FS-MEHMET/001-roman-numerals-converter/main"
+         cd /home/ec2-user
+         python3 -m venv env
+         source env/bin/activate
          wget ${FOLDER}/roman-numerals-converter-app.py
          mkdir templates && cd templates
          wget ${FOLDER}/templates/index.html
          wget ${FOLDER}/templates/result.html
          cd ..
+         pip install flask
          python3 roman-numerals-converter-app.py
 
 Outputs:
