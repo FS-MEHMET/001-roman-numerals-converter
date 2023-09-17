@@ -29,7 +29,7 @@ Resources:
           Value: !Sub Web Server of ${AWS::StackName}
 
       UserData: !Base64 |
-        #! /bin/bash
+        #!/bin/bash
          yum update -y
          yum install python3
          yum install python3-pip
